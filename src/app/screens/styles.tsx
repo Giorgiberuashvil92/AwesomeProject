@@ -17,6 +17,10 @@ const style = StyleSheet.create({
         backgroundColor: 'red',
         flex:1
       },
+      welcomeName: {
+        fontSize:18,
+        color: 'blue'
+      },
       box: {
         backgroundColor:'black',
         flex:1,

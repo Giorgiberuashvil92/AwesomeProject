@@ -5,36 +5,55 @@ import {
     SafeAreaView,
     Text,
     TextInput,
+    Alert,
     View,
  } from 'react-native';
- import axios from 'axios'
 import style from '../screens/styles'
-import { userLogin } from './../api/register';
 import { useState } from 'react';
+
 
 
 
  const AuthScreen = ({navigation}) => {
 
-    const [email, onChangeEmail] = useState('');
-    const [password, onChangePassword] = useState('')
+     const [email, onChangeEmail] = useState('');
+     const [password, onChangePassword] = useState('')
 
-    const onPress = () => {
-        const params = {
-            email:'gio@gmail.com',
-            password: 'Berobero1'
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email:email,
+            password: password, 
+        }),
+    };
+
+
+
+    const onPressRegister = async() =>{
+        try {
+            await fetch(
+                'http://192.168.0.106:3000/api/auth/register',requestOptions
+            ).then(Response => {
+                Response.json()
+                .then(data => {
+                    console.log(data)
+                    if(data.statusCode !== 400){
+                        navigation.navigate('Success', {email})
+                    } else {
+                        Alert.alert(data.message)
+                    }
+                })
+            })
+        } catch (error) {
+            console.log(error, "Error")
         }
-        axios.post('http://109.172.240.103:3000/api/auth/login',params).then(() => {
-            navigation.navigate('Success')
-            console.log('Response', Response?.data);
-        }).catch(error => {
-            console.log('Error',error)
-        })
     }
-    
+
     const OnLoginPress = () => {
         navigation.navigate('Login')
     }
+    
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor:'black'}}>
@@ -55,7 +74,7 @@ import { useState } from 'react';
         placeholderTextColor="rgba(255, 255, 255, 0.9)"
         placeholder="Password"/>
 
-        <Pressable style={style.button} onPress={onPress}>
+        <Pressable style={style.button} onPress={onPressRegister}>
             <Text style={style.text}>Register</Text>
         </Pressable>
 
